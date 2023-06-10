@@ -2,7 +2,6 @@ import { useState } from 'react'
 import './App.css'
 
 import { DrumTiles } from './assets/data'
-import { useEffect } from 'react';
 
 function App() {
   const [type, setType] = useState('')
@@ -16,17 +15,21 @@ function App() {
   }
 
   function handleKeyPress (e){
-    console.log(audioVolume);
     let key = e.key.toUpperCase();
     const sourceFinder = (letter) => letter===key;
     let index = letters.findIndex(sourceFinder);
     if(index<0){
       return;
     }
+   audioCreation(index);
+  }
+
+  function audioCreation(index){
+    console.log(audioVolume);
     let audio = new Audio(DrumTiles[index].src);
-    audio.volume = audioVolume;
+    audio.volume=audioVolume;
     audio.play();
-    document.getElementById(DrumTiles[index].id).style.backgroundColor ='red';
+    document.getElementById(DrumTiles[index].id).style.backgroundColor ='#E4CC37';
     setType(DrumTiles[index].id); 
   }
 
@@ -34,25 +37,39 @@ function App() {
     let key = e.key.toUpperCase();
     const sourceFinder = (letter) => letter===key;
     let index = letters.findIndex(sourceFinder);
-    document.getElementById(DrumTiles[index].id).style.backgroundColor ='#242424';
+    if(index<0){
+      return;
+    }
+    document.getElementById(DrumTiles[index].id).style.backgroundColor ='#0072BB';
   }
 
 
 
   return (
     <>
-      <div id="title">
-        <h1>Welcome to Emojica Fantabulous Sound Machine!</h1>
-      </div>
-      <div id= "drum-machine" >
-            <div id='tileSpace'>
+    <div id='wrapper' tabIndex= '0'    
+            onKeyDown={(e)=>{
+                        handleKeyPress(e);
+                      }}
+                onKeyUp={(e)=>{
+                  handleKeyUp(e);
+                }}>
+      <div id= "drum-machine">
+            <div id='title'>
+                <h1> Emojica Fabulous drum Machine</h1>
+            </div>
+            <div id='tileSpace' tabIndex='0'>
               {DrumTiles.map((drum) => (
-                <div key={drum.letter} className={drum.className} id={drum.id} onClick={()=>{
+                <div  key={drum.letter} className={drum.className} id={drum.id} 
+             
+               
+                onClick={()=>{
                   setType(drum.id);
                   let audio = new Audio(drum.src);
                   audio.volume = audioVolume;
                   audio.play();
-                }}
+                }
+                }
                >
                   {drum.letter}
                   <audio src={drum.src} type={drum.type} />
@@ -73,6 +90,7 @@ function App() {
               </div>
             </div>
       </div>
+    </div>
       
     </>
   )
